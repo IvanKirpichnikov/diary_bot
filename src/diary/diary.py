@@ -6,8 +6,8 @@ from diary.methods.base import DiaryMethod
 from diary.methods.get_short_schedules import GetShortSchedules
 from diary.methods.get_student_profile import GetStudentProfile
 from diary.methods.get_user_info import GetUserInfo
-from diary.session.aiohttp import AiohttpSession
-from diary.session.base import BaseSession
+from diary.sessions.aiohttp import AiohttpSession
+from diary.sessions.base import BaseSession
 from diary.types.base import DiaryType
 from diary.types.short_schedule import ShortSchedules
 from diary.types.student_profile import StudentProfile

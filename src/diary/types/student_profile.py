@@ -8,8 +8,20 @@ from uuid import UUID
 from adaptix import P, Retort, loader
 
 from diary.types.base import DiaryType
-from diary.types.class_unit import ClassUnit
-from diary.types.curricula import Curricula
+
+
+@dataclass(frozen=True)
+class ClassUnit(DiaryType):
+    id: int
+    name: str
+    class_level_id: int
+
+
+@dataclass(frozen=True)
+class Curricula(DiaryType):
+    id: int
+    name: str
+    class_level_id: int | None = None
 
 
 @dataclass(frozen=True)

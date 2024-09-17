@@ -3,7 +3,7 @@ from typing import Any, override
 from aiohttp import ClientSession
 
 from diary.methods.base import DiaryMethod
-from diary.session.base import BaseSession
+from diary.sessions.base import BaseSession
 from diary.types.base import DiaryType
 
 
