@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = 'diary_bot'
+version = '1.0.0'
+description = ''
+license = { file = 'LICENSE' }
+maintainers = [
+    { name = "Ivan Kirpichnikov", email = "mmssvvvv570@gmail.com" }
+]
+dependencies = [
+    'aiohttp==3.10.5',
+    'adaptix==3.0.0b7',
+]
+
+[project.optional-dependencies]
+dev = [
+    'mypy==1.11.1',
+    'ruff==0.6.2',
+]
+[tool.mypy]
+strict = true
+show_absolute_path = true
+enable_error_code = "explicit-override"
+enable_incomplete_feature = 'NewGenericSyntax'

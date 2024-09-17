@@ -1,0 +1,30 @@
+line-length = 79
+target-version = 'py311'
+select = ['ALL']
+ignore = [
+    'A002',
+    'ANN101',
+    'ARG001',
+    'ARG002',
+    'ARG005',
+    'G002',
+    'DTZ007',
+    'TCH001',
+    'EM101',
+    'TRY003',
+    'G004',
+    'E501',
+    'RET505',
+    'RET501',
+    'UP031',
+    'PLR2004',
+    'PLR0913',
+    'ANN401',
+    'S608',
+    'SIM108',
+    'TCH003',
+    'FBT001',
+    'FBT003',
+    'D',
+    'PLC0105',
+]
