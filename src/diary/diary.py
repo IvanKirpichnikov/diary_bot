@@ -1,5 +1,5 @@
-from collections.abc import AsyncIterable
-from contextlib import asynccontextmanager
+from __future__ import annotations
+
 from datetime import date
 from types import TracebackType
 from typing import Self
@@ -20,14 +20,12 @@ class Diary:
     def __init__(
         self,
         bearer_token: str,
-        session: BaseSession | None = None,
+        session: BaseSession,
+        student_profile: StudentProfile,
     ) -> None:
-        self._bearer_token = bearer_token
-        self._student_profile = None
-
-        if session is None:
-            session = AiohttpSession()
         self._session = session
+        self._bearer_token = bearer_token
+        self._student_profile = student_profile
 
     async def send_request[MT: DiaryType](
         self,
@@ -44,7 +42,7 @@ class Diary:
         exc_val: BaseException | None = None,
         exc_tb: TracebackType | None = None,
     ) -> None:
-        await self._session.close()
+        await self.close()
 
     async def close(self) -> None:
         await self._session.close()
@@ -65,9 +63,6 @@ class Diary:
         self,
         dates: list[date],
     ) -> ShortSchedules:
-        if self._student_profile is None:
-            raise ValueError
-
         method = GetShortSchedules(
             dates=dates,
             student_id=self._student_profile.id,
@@ -76,15 +71,20 @@ class Diary:
         return await self.send_request(method)
 
 
-@asynccontextmanager
 async def create_diary(
     bearer_token: str,
     session: BaseSession | None = None,
-) -> AsyncIterable[Diary]:
-    async with Diary(
+) -> Diary:
+    if session is None:
+        session = AiohttpSession()
+
+    student_profile = await session.send_request(
+        GetStudentProfile(
+            bearer_token=bearer_token,
+        ),
+    )
+    return Diary(
         session=session,
         bearer_token=bearer_token,
-    ) as diary_object:
-        student_profile = await diary_object.get_student_profile()
-        diary_object._student_profile = student_profile  # noqa: SLF001
-        yield diary_object
+        student_profile=student_profile,
+    )

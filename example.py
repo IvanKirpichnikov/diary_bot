@@ -3,19 +3,21 @@ from datetime import datetime
 
 from diary.diary import create_diary
 
+BEARER_TOKEN = ""
 
-BEARER_TOKEN = ''
 
+async def main() -> None:
+    diary = await create_diary(BEARER_TOKEN)
 
-async def main():
-    async with create_diary(BEARER_TOKEN) as diary:
-        print(
-            await diary.get_short_schedules(
-                [datetime.now().date()]
-            )
-        )
-        print(await diary.get_student_profile())
-        print(await diary.get_user_info())
+    print(await diary.get_student_profile())
+    print(await diary.get_user_info())
+    print(
+        await diary.get_short_schedules(
+            [datetime.now().date()],
+        ),
+    )
+
+    await diary.close()
 
 
 asyncio.run(main())

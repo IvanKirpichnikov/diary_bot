@@ -30,10 +30,7 @@ class GetShortSchedules(DiaryMethod[ShortSchedules]):
             query_params={
                 "student_id": str(self.student_id),
                 "dates": ",".join(
-                    [
-                        date_.strftime("%Y-%m-%d")
-                        for date_ in self.dates
-                    ],
+                    [date_.strftime("%Y-%m-%d") for date_ in self.dates],
                 ),
             },
         )
