@@ -1,7 +1,8 @@
+from collections.abc import AsyncIterable
 from contextlib import asynccontextmanager
 from datetime import date
 from types import TracebackType
-from typing import AsyncIterable, Self
+from typing import Self
 
 from diary.methods.base import DiaryMethod
 from diary.methods.get_short_schedules import GetShortSchedules
@@ -23,20 +24,20 @@ class Diary:
     ) -> None:
         self._bearer_token = bearer_token
         self._student_profile = None
-        
+
         if session is None:
             session = AiohttpSession()
         self._session = session
-    
+
     async def send_request[MT: DiaryType](
         self,
         method: DiaryMethod[MT],
     ) -> MT:
         return await self._session.send_request(method)
-    
+
     async def __aenter__(self) -> Self:
         return self
-    
+
     async def __aexit__(
         self,
         exc_type: type[BaseException] | None = None,
@@ -44,29 +45,29 @@ class Diary:
         exc_tb: TracebackType | None = None,
     ) -> None:
         await self._session.close()
-    
+
     async def close(self) -> None:
         await self._session.close()
-    
+
     async def get_student_profile(self) -> StudentProfile:
         method = GetStudentProfile(
             bearer_token=self._bearer_token,
         )
         return await self.send_request(method)
-    
+
     async def get_user_info(self) -> UserInfo:
         method = GetUserInfo(
             bearer_token=self._bearer_token,
         )
         return await self.send_request(method)
-    
+
     async def get_short_schedules(
         self,
         dates: list[date],
     ) -> ShortSchedules:
         if self._student_profile is None:
             raise ValueError
-        
+
         method = GetShortSchedules(
             dates=dates,
             student_id=self._student_profile.id,
