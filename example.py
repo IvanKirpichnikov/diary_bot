@@ -8,7 +8,7 @@ BEARER_TOKEN = ''
 
 
 async def main():
-    async with await create_diary(BEARER_TOKEN) as diary:
+    async with create_diary(BEARER_TOKEN) as diary:
         print(
             await diary.get_short_schedules(
                 [datetime.now().date()]
