@@ -7,11 +7,11 @@ from uuid import UUID
 
 from adaptix import P, Retort, loader, name_mapping
 
-from diary.types.base import DiaryType
+from mesh_diary.types.base import BaseType
 
 
 @dataclass(slots=True, frozen=True)
-class UserInfo(DiaryType):
+class UserInfo(BaseType):
     id: int
     date_birth: date
     gender: str

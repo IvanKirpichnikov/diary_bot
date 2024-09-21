@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 
-class DiaryType:
+class BaseType:
     @classmethod
-    def from_data(cls, data: Any) -> DiaryType:
+    def from_data(cls, data: Any) -> BaseType:
         raise NotImplementedError

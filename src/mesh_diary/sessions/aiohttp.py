@@ -2,9 +2,9 @@ from typing import Any, override
 
 from aiohttp import ClientSession
 
-from diary.methods.base import DiaryMethod
-from diary.sessions.base import BaseSession
-from diary.types.base import DiaryType
+from mesh_diary.methods.base import BaseMethod
+from mesh_diary.sessions.base import BaseSession
+from mesh_diary.types.base import BaseType
 
 
 class AiohttpSession(BaseSession):
@@ -12,9 +12,9 @@ class AiohttpSession(BaseSession):
         self._session = ClientSession()
 
     @override
-    async def _send_request[MT: DiaryType](
+    async def _send_request[MT: BaseType](
         self,
-        method: DiaryMethod[MT],
+        method: BaseMethod[MT],
     ) -> Any:
         if method.__http_method_type__ == "get":
             http_method = self._session.get

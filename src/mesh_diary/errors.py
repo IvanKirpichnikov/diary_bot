@@ -1,0 +1,2 @@
+class MeshError(Exception):
+    pass

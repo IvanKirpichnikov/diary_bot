@@ -1,4 +1,4 @@
-from .base import DiaryType
+from .base import BaseType
 from .short_schedule import Lesson, ShortSchedule, ShortSchedules
 from .student_profile import ClassUnit, Curricula, StudentProfile
 from .user_info import UserInfo
@@ -10,6 +10,6 @@ __all__ = [
     "StudentProfile",
     "ClassUnit",
     "Lesson",
-    "DiaryType",
+    "BaseType",
     "Curricula",
 ]

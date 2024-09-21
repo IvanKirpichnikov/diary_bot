@@ -7,25 +7,25 @@ from uuid import UUID
 
 from adaptix import P, Retort, loader
 
-from diary.types.base import DiaryType
+from mesh_diary.types.base import BaseType
 
 
 @dataclass(frozen=True)
-class ClassUnit(DiaryType):
+class ClassUnit(BaseType):
     id: int
     name: str
     class_level_id: int
 
 
 @dataclass(frozen=True)
-class Curricula(DiaryType):
+class Curricula(BaseType):
     id: int
     name: str
     class_level_id: int | None = None
 
 
 @dataclass(frozen=True)
-class StudentProfile(DiaryType):
+class StudentProfile(BaseType):
     id: int
     person_id: UUID
     school_id: int

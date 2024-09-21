@@ -1,6 +1,12 @@
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Literal, Protocol
+from enum import StrEnum
+from typing import Protocol
+
+
+class HttpMethodType(StrEnum):
+    GET = "get"
+    POST = "post"
 
 
 @dataclass(frozen=True)
@@ -10,10 +16,10 @@ class RequestContext:
     query_params: dict[str, str] | None = None
 
 
-class DiaryMethod[T](Protocol):
+class BaseMethod[T](Protocol):
     __url__: str
     __returning__: type[T]
-    __http_method_type__: Literal["get", "post"]
+    __http_method_type__: HttpMethodType
 
     @abstractmethod
     def build_request_context(self) -> RequestContext:

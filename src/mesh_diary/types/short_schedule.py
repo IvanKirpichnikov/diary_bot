@@ -6,7 +6,7 @@ from typing import Any, override
 
 from adaptix import P, Retort, loader
 
-from diary.types.base import DiaryType
+from mesh_diary.types.base import BaseType
 
 
 @dataclass(frozen=True)
@@ -22,13 +22,13 @@ class Lesson:
 
 
 @dataclass(frozen=True)
-class ShortSchedule(DiaryType):
+class ShortSchedule(BaseType):
     date: date
     lessons: list[Lesson]
 
 
 @dataclass(frozen=True)
-class ShortSchedules(DiaryType):
+class ShortSchedules(BaseType):
     schedules: list[ShortSchedule]
 
     @classmethod
