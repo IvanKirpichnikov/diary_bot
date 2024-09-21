@@ -4,7 +4,7 @@ from enum import StrEnum
 from typing import Protocol
 
 
-class HttpMethodType(StrEnum):
+class HTTPMethodType(StrEnum):
     GET = "get"
     POST = "post"
 
@@ -19,7 +19,7 @@ class RequestContext:
 class BaseMethod[T](Protocol):
     __url__: str
     __returning__: type[T]
-    __http_method_type__: HttpMethodType
+    __http_method_type__: HTTPMethodType
 
     @abstractmethod
     def build_request_context(self) -> RequestContext:

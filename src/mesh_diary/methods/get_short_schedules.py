@@ -4,7 +4,7 @@ from typing import override
 
 from mesh_diary.methods.base import (
     BaseMethod,
-    HttpMethodType,
+    HTTPMethodType,
     RequestContext,
 )
 from mesh_diary.types.short_schedule import ShortSchedules
@@ -13,7 +13,7 @@ from mesh_diary.types.short_schedule import ShortSchedules
 @dataclass(frozen=True)
 class GetShortSchedules(BaseMethod[ShortSchedules]):
     __returning__ = ShortSchedules
-    __http_method_type__ = HttpMethodType.GET
+    __http_method_type__ = HTTPMethodType.GET
     __url__ = "https://school.mos.ru/api/family/web/v1/schedule/short"
 
     student_id: int

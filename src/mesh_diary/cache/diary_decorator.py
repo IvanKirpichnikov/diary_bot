@@ -6,8 +6,7 @@ from types import TracebackType
 from typing import Any, Self, cast, override
 
 from mesh_diary import MeshDiary
-from mesh_diary.identity_maps.base import IdentityMap
-from mesh_diary.identity_maps.ttl_identity_map import TTLIdentityMap
+from mesh_diary.cache.cache_adapter import IdentityMap, TTLInMemoryIdentityMap
 from mesh_diary.methods.base import BaseMethod
 from mesh_diary.methods.get_short_schedules import GetShortSchedules
 from mesh_diary.methods.get_student_profile import GetStudentProfile
@@ -23,7 +22,7 @@ type IdentityMaps = Mapping[
 ]
 
 
-class CacheMediator(MeshDiary):
+class MeshDiaryCacheDecorator(MeshDiary):
     def __init__(
         self,
         mesh_diary: MeshDiary,
@@ -32,9 +31,12 @@ class CacheMediator(MeshDiary):
         self._mesh_diary = mesh_diary
         if identity_maps is None:
             identity_maps = {
-                GetShortSchedules: TTLIdentityMap(),
-                GetUserInfo: TTLIdentityMap(max_size=1, ttl=10_000),
-                GetStudentProfile: TTLIdentityMap(max_size=1, ttl=10_000),
+                GetShortSchedules: TTLInMemoryIdentityMap(),
+                GetUserInfo: TTLInMemoryIdentityMap(max_size=1, ttl=10_000),
+                GetStudentProfile: TTLInMemoryIdentityMap(
+                    max_size=1,
+                    ttl=10_000,
+                ),
             }
         self._identity_maps: Mapping[Any, Any] = identity_maps
 
@@ -65,7 +67,7 @@ class CacheMediator(MeshDiary):
     @override
     async def get_student_profile(self) -> StudentProfile:
         identity_map = cast(
-            TTLIdentityMap[None, StudentProfile],
+            TTLInMemoryIdentityMap[None, StudentProfile],
             self._identity_maps[GetStudentProfile],
         )
 
@@ -80,7 +82,7 @@ class CacheMediator(MeshDiary):
     @override
     async def get_user_info(self) -> UserInfo:
         identity_map = cast(
-            TTLIdentityMap[None, UserInfo],
+            TTLInMemoryIdentityMap[None, UserInfo],
             self._identity_maps[GetUserInfo],
         )
 
@@ -98,7 +100,7 @@ class CacheMediator(MeshDiary):
         dates: list[date],
     ) -> ShortSchedules:
         identity_map = cast(
-            TTLIdentityMap[date, ShortSchedule],
+            TTLInMemoryIdentityMap[date, ShortSchedule],
             self._identity_maps[GetShortSchedules],
         )
 

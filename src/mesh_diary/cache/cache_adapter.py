@@ -1,13 +1,23 @@
+from abc import abstractmethod
 from collections.abc import Hashable, MutableMapping
-from typing import override
+from typing import Protocol, override
 
 from cachetools import TTLCache
 
-from mesh_diary.identity_maps.base import IdentityMap
 from mesh_diary.types import BaseType
 
 
-class TTLIdentityMap[KT: Hashable, VT: BaseType](IdentityMap[KT, VT]):
+class IdentityMap[KT: Hashable, VT: BaseType](Protocol):
+    @abstractmethod
+    def get(self, key: KT) -> VT | None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def set(self, key: KT, value: VT) -> None:
+        raise NotImplementedError
+
+
+class TTLInMemoryIdentityMap[KT: Hashable, VT: BaseType](IdentityMap[KT, VT]):
     _cache: MutableMapping[KT, VT]
 
     def __init__(
@@ -27,7 +37,3 @@ class TTLIdentityMap[KT: Hashable, VT: BaseType](IdentityMap[KT, VT]):
     @override
     def set(self, key: KT, value: VT) -> None:
         self._cache[key] = value
-
-    @override
-    def delete(self, key: KT) -> None:
-        del self._cache[key]
