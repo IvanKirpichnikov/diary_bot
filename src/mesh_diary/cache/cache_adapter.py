@@ -7,7 +7,7 @@ from cachetools import TTLCache
 from mesh_diary.types import BaseType
 
 
-class IdentityMap[KT: Hashable, VT: BaseType](Protocol):
+class CacheAdapter[KT: Hashable, VT: BaseType](Protocol):
     @abstractmethod
     def get(self, key: KT) -> VT | None:
         raise NotImplementedError
@@ -17,7 +17,9 @@ class IdentityMap[KT: Hashable, VT: BaseType](Protocol):
         raise NotImplementedError
 
 
-class TTLInMemoryIdentityMap[KT: Hashable, VT: BaseType](IdentityMap[KT, VT]):
+class TTLInMemoryCacheAdapter[KT: Hashable, VT: BaseType](
+    CacheAdapter[KT, VT],
+):
     _cache: MutableMapping[KT, VT]
 
     def __init__(

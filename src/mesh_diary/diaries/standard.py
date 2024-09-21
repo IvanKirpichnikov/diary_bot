@@ -4,6 +4,7 @@ from datetime import date
 from types import TracebackType
 from typing import Self, override
 
+from mesh_diary.cache.diary_decorator import CacheMap, MeshDiaryCacheDecorator
 from mesh_diary.diaries.base import MeshDiary
 from mesh_diary.methods.base import BaseMethod
 from mesh_diary.methods.get_short_schedules import GetShortSchedules
@@ -82,6 +83,8 @@ class MeshDiaryStandard(MeshDiary):
 async def create_mesh_diary(
     authorization_token: str,
     session: BaseSession | None = None,
+    cache: bool = True,
+    cache_map: CacheMap | None = None,
 ) -> MeshDiary:
     if session is None:
         session = AiohttpSession()
@@ -91,8 +94,14 @@ async def create_mesh_diary(
             authorization_token=authorization_token,
         ),
     )
-    return MeshDiaryStandard(
+    mesh_diary = MeshDiaryStandard(
         session=session,
         authorization_token=authorization_token,
         student_profile_id=student_profile.id,
     )
+    if cache:
+        return MeshDiaryCacheDecorator(
+            mesh_diary=mesh_diary,
+            cache_map=cache_map,
+        )
+    return mesh_diary

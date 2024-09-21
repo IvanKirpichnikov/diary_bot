@@ -6,7 +6,10 @@ from types import TracebackType
 from typing import Any, Self, cast, override
 
 from mesh_diary import MeshDiary
-from mesh_diary.cache.cache_adapter import IdentityMap, TTLInMemoryIdentityMap
+from mesh_diary.cache.cache_adapter import (
+    CacheAdapter,
+    TTLInMemoryCacheAdapter,
+)
 from mesh_diary.methods.base import BaseMethod
 from mesh_diary.methods.get_short_schedules import GetShortSchedules
 from mesh_diary.methods.get_student_profile import GetStudentProfile
@@ -16,9 +19,9 @@ from mesh_diary.types.short_schedule import ShortSchedule, ShortSchedules
 from mesh_diary.types.student_profile import StudentProfile
 from mesh_diary.types.user_info import UserInfo
 
-type IdentityMaps = Mapping[
+type CacheMap = Mapping[
     type[BaseMethod[Any]],
-    IdentityMap[Any, Any],
+    CacheAdapter[Any, Any],
 ]
 
 
@@ -26,19 +29,19 @@ class MeshDiaryCacheDecorator(MeshDiary):
     def __init__(
         self,
         mesh_diary: MeshDiary,
-        identity_maps: IdentityMaps | None = None,
+        cache_map: CacheMap | None = None,
     ) -> None:
         self._mesh_diary = mesh_diary
-        if identity_maps is None:
-            identity_maps = {
-                GetShortSchedules: TTLInMemoryIdentityMap(),
-                GetUserInfo: TTLInMemoryIdentityMap(max_size=1, ttl=10_000),
-                GetStudentProfile: TTLInMemoryIdentityMap(
+        if cache_map is None:
+            cache_map = {
+                GetShortSchedules: TTLInMemoryCacheAdapter(),
+                GetUserInfo: TTLInMemoryCacheAdapter(max_size=1, ttl=10_000),
+                GetStudentProfile: TTLInMemoryCacheAdapter(
                     max_size=1,
                     ttl=10_000,
                 ),
             }
-        self._identity_maps: Mapping[Any, Any] = identity_maps
+        self._cache_map: Mapping[Any, CacheAdapter[Any, Any]] = cache_map
 
     @override
     async def __aenter__(self) -> Self:
@@ -67,8 +70,8 @@ class MeshDiaryCacheDecorator(MeshDiary):
     @override
     async def get_student_profile(self) -> StudentProfile:
         identity_map = cast(
-            TTLInMemoryIdentityMap[None, StudentProfile],
-            self._identity_maps[GetStudentProfile],
+            TTLInMemoryCacheAdapter[None, StudentProfile],
+            self._cache_map[GetStudentProfile],
         )
 
         cache_student_profile = identity_map.get(None)
@@ -82,8 +85,8 @@ class MeshDiaryCacheDecorator(MeshDiary):
     @override
     async def get_user_info(self) -> UserInfo:
         identity_map = cast(
-            TTLInMemoryIdentityMap[None, UserInfo],
-            self._identity_maps[GetUserInfo],
+            TTLInMemoryCacheAdapter[None, UserInfo],
+            self._cache_map[GetUserInfo],
         )
 
         cache_user_info = identity_map.get(None)
@@ -100,8 +103,8 @@ class MeshDiaryCacheDecorator(MeshDiary):
         dates: list[date],
     ) -> ShortSchedules:
         identity_map = cast(
-            TTLInMemoryIdentityMap[date, ShortSchedule],
-            self._identity_maps[GetShortSchedules],
+            TTLInMemoryCacheAdapter[date, ShortSchedule],
+            self._cache_map[GetShortSchedules],
         )
 
         cache_schedules: list[ShortSchedule | None] = []
